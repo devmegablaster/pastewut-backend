@@ -13,4 +13,5 @@ func SetupRoutes(app *fiber.App) {
 
   // Setup routes here
   PasteWutRouter(app)
+  UserRouter(app)
 }
