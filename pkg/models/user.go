@@ -1,11 +1,14 @@
 package models
 
 import (
+	"os"
 	"regexp"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/devmegablaster/pastewut-backend/pkg/errors"
+	"github.com/golang-jwt/jwt"
 )
 
 type User struct {
@@ -49,4 +52,33 @@ func (u *User) HashPassword() error {
   u.Password = string(bytes)
 
   return nil
+}
+
+func (u *User) ComparePassword(password string) error {
+  err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+  if err != nil {
+    return errors.InvalidPassword.Err
+  }
+
+  return nil
+}
+
+func (u *User) GenerateJWT() (string, error) {
+  token := jwt.New(jwt.SigningMethodHS256)
+
+  var claims *jwt.MapClaims
+
+  claims = &jwt.MapClaims{
+    "email": u.Email,
+    "exp": time.Now().Add(time.Hour * 24).Unix(),
+  }
+
+  token.Claims = claims
+  tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+
+  if err != nil {
+    return "", errors.InternalServerError.Err
+  }
+
+  return tokenString, nil
 }
