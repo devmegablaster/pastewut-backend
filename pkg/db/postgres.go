@@ -6,6 +6,8 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+  "github.com/devmegablaster/pastewut-backend/pkg/models"
 )
 
 var PsqlDB *gorm.DB
@@ -22,4 +24,6 @@ func InitiatePostgres() {
   fmt.Println("Postgres connected")
 
   // Migrate the schema
+  PsqlDB.AutoMigrate(&models.PasteWut{})
+  PsqlDB.AutoMigrate(&models.User{})
 }
