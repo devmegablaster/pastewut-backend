@@ -44,4 +44,14 @@ var (
     Code: "user_already_exists",
     Err: fmt.Errorf("User Already Exists"),
   }
+
+  Unauthorized = &Error{
+    Code: "unauthorized",
+    Err: fmt.Errorf("Unauthorized"),
+  }
+
+  InvalidToken = &Error{
+    Code: "invalid_token",
+    Err: fmt.Errorf("Invalid Token"),
+  }
 )

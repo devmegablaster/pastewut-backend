@@ -13,7 +13,7 @@ import (
 
 type User struct {
   Email string `json:"email" gorm:"primary_key"`
-  Password string `json:"password" gorm:"not null"`
+  Password string `json:"password,omitempty" gorm:"not null"`
   Pastes []PasteWut `json:"pastes" gorm:"foreignkey:Code"`
 }
 
@@ -81,4 +81,34 @@ func (u *User) GenerateJWT() (string, error) {
   }
 
   return tokenString, nil
+}
+
+func (u *User) ValidateJWT(tokenString string) (string, error) {
+  token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+    if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+      return nil, errors.InvalidToken.Err
+    }
+
+    return []byte(os.Getenv("JWT_SECRET")), nil
+  })
+
+  if err != nil {
+    return "", errors.InvalidToken.Err
+  }
+
+  if !token.Valid {
+    return "", errors.InvalidToken.Err
+  }
+
+  claims, ok := token.Claims.(jwt.MapClaims)
+  if !ok {
+    return "", errors.InvalidToken.Err
+  }
+
+  email, ok := claims["email"].(string)
+  if !ok {
+    return "", errors.InvalidToken.Err
+  }
+
+  return email, nil
 }
