@@ -11,5 +11,6 @@ func SetupRoutes(app *fiber.App) {
     return c.SendString("Hello, World!")
   })
 
-  // Setup other routes here
+  // Setup routes here
+  PasteWutRouter(app)
 }
