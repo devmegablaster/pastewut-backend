@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"github.com/devmegablaster/pastewut-backend/pkg/db"
 	"github.com/devmegablaster/pastewut-backend/pkg/errors"
 	"github.com/devmegablaster/pastewut-backend/pkg/models"
 	"github.com/gofiber/fiber/v2"
@@ -20,7 +21,12 @@ func AuthMiddleware(c *fiber.Ctx) error {
     return c.Status(fiber.StatusUnauthorized).JSON(errors.Unauthorized.Error())
   }
 
+  if err := db.PsqlDB.Where("email = ?", email).First(&dbUser).Error; err != nil {
+    return c.Status(fiber.StatusUnauthorized).JSON(errors.Unauthorized.Error())
+  }
+
   c.Locals("email", email)
+  c.Locals("user", dbUser)
 
   return c.Next()
 }
