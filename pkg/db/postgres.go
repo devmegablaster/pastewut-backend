@@ -24,6 +24,6 @@ func InitiatePostgres() {
   fmt.Println("Postgres connected")
 
   // Migrate the schema
-  PsqlDB.AutoMigrate(&models.PasteWut{})
   PsqlDB.AutoMigrate(&models.User{})
+  PsqlDB.AutoMigrate(&models.PasteWut{})
 }

@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/devmegablaster/pastewut-backend/pkg/db"
+	"github.com/devmegablaster/pastewut-backend/pkg/errors"
 	"github.com/devmegablaster/pastewut-backend/pkg/models"
-  "github.com/devmegablaster/pastewut-backend/pkg/errors"
 )
 
 func CreatePasteWut(c *fiber.Ctx) error {
@@ -44,10 +46,7 @@ func GetPasteWut(c *fiber.Ctx) error {
     return c.Status(fiber.StatusBadRequest).JSON(errors.InvalidPastewutCode.Error())
   }
 
-  return c.JSON(fiber.Map{
-    "success": true,
-    "content": pastewut.Content,
-  })
+  return c.JSON(pastewut)
 }
 
 func CreateCustomPasteWut(c *fiber.Ctx) error {
@@ -67,13 +66,16 @@ func CreateCustomPasteWut(c *fiber.Ctx) error {
   if err := db.PsqlDB.Create(&models.PasteWut{
     Code: pastewut.Code,
     Content: pastewut.Content,
+    Author: c.Locals("email").(string),
   }).Error; err != nil {
+    fmt.Println(err)
     return c.Status(fiber.StatusInternalServerError).JSON(errors.PastewutAlreadyExists.Error())
   }
 
-  //if err := db.PsqlDB.Where("email = ?", c.Locals("email")).Update("pastes", pastewut); err != nil {
-  //  return c.Status(fiber.StatusInternalServerError).JSON(errors.InternalServerError.Error())
-  //}
+  var pasteMap []models.PasteWut
+  pasteMap = append(pasteMap, *pastewut)
+
+  fmt.Println(pasteMap)
 
   return c.JSON(fiber.Map{
     "success": true,
