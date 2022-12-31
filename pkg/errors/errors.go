@@ -54,4 +54,9 @@ var (
     Code: "invalid_token",
     Err: fmt.Errorf("Invalid Token"),
   }
+
+  PastewutAlreadyExists = &Error{
+    Code: "pastewut_already_exists",
+    Err: fmt.Errorf("Pastewut Already Exists"),
+  }
 )

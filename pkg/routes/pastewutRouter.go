@@ -10,7 +10,5 @@ func PasteWutRouter(app *fiber.App) {
   pastewut := app.Group("/pastewut")
   pastewut.Post("/", handlers.CreatePasteWut)
   pastewut.Get("/:code", handlers.GetPasteWut)
-  pastewut.Post("/custom", middlewares.AuthMiddleware, func (c *fiber.Ctx) error {
-    return c.JSON(c.Locals("user"))
-  })
+  pastewut.Post("/custom", middlewares.AuthMiddleware, handlers.CreateCustomPasteWut)
 }
