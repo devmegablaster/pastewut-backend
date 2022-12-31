@@ -82,3 +82,27 @@ func CreateCustomPasteWut(c *fiber.Ctx) error {
     "code": pastewut.Code,
   })
 }
+
+func EditPasteWut(c *fiber.Ctx) error {
+  pastewut := new(models.PasteWut)
+  if err := c.BodyParser(pastewut); err != nil {
+    return c.Status(fiber.StatusInternalServerError).JSON(errors.InternalServerError.Error())
+  }
+
+  dbPastewut := c.Locals("pastewut").(models.PasteWut)
+
+  if pastewut.Content == "" {
+    return c.Status(fiber.StatusBadRequest).JSON(errors.InvalidPastewut.Error())
+  }
+
+  if err := db.PsqlDB.Model(&models.PasteWut{}).Where("code = ?", dbPastewut.Code).Update("content", pastewut.Content).Error; err != nil {
+    fmt.Println(err)
+    return c.Status(fiber.StatusInternalServerError).JSON(errors.InternalServerError.Error())
+  }
+
+  return c.JSON(fiber.Map{
+    "success": true,
+    "code": dbPastewut.Code,
+    "content": pastewut.Content,
+  })
+}
