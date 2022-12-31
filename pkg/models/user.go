@@ -14,7 +14,6 @@ import (
 type User struct {
   Email string `json:"email" gorm:"primary_key"`
   Password string `json:"password,omitempty" gorm:"not null"`
-  Pastes []PasteWut `json:"pastes" gorm:"foreignkey:Code"`
 }
 
 func (u *User) ValidateEmail() error {

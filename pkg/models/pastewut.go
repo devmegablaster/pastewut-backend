@@ -6,7 +6,7 @@ import (
 )
 
 type PasteWut struct {
-  Code string `json:"code" gorm:"unique"`
+  Code string `json:"code" gorm:"unique;primary_key"`
   Content string `json:"content" gorm:"not null"`
   Author string `json:"author,omitempty"`
 }
