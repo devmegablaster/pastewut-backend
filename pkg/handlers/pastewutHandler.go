@@ -106,3 +106,24 @@ func EditPasteWut(c *fiber.Ctx) error {
     "content": pastewut.Content,
   })
 }
+
+func CheckPasteWutCode(c *fiber.Ctx) error {
+  code := c.Params("code")
+  if code == "" {
+    return c.Status(fiber.StatusOK).JSON(fiber.Map{
+      "exists": true,
+    })
+  }
+
+  var pastewut models.PasteWut
+
+  if err := db.PsqlDB.Where("code = ?", code).First(&pastewut).Error; err != nil {
+    return c.Status(fiber.StatusOK).JSON(fiber.Map{
+      "exists": true,
+    })
+  }
+
+  return c.Status(fiber.StatusOK).JSON(fiber.Map{
+    "exists": false,
+  })
+}

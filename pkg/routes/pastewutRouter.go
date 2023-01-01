@@ -12,4 +12,5 @@ func PasteWutRouter(app *fiber.App) {
   pastewut.Get("/:code", handlers.GetPasteWut)
   pastewut.Post("/custom", middlewares.AuthMiddleware, handlers.CreateCustomPasteWut)
   pastewut.Post("/edit/:code", middlewares.EditPastewutMiddleware, handlers.EditPasteWut)
+  pastewut.Get("/check/:code", middlewares.AuthMiddleware, handlers.CheckPasteWutCode)
 }
