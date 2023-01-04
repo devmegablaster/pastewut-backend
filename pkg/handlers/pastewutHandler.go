@@ -43,7 +43,7 @@ func GetPasteWut(c *fiber.Ctx) error {
 
   var pastewut models.PasteWut
   if err := db.PsqlDB.Where("code = ?", code).First(&pastewut).Error; err != nil {
-    return c.Status(fiber.StatusBadRequest).JSON(errors.InvalidPastewutCode.Error())
+    return c.Status(fiber.StatusNotFound).JSON(errors.InvalidPastewutCode.Error())
   }
 
   return c.JSON(pastewut)
